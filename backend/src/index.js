@@ -17,10 +17,8 @@ mongoose.connect(process.env.MONGODB_URI)
         console.error('Could not connect to MongoDB', err);
     });
 
-// Routes
-fastify.get('/', async (request, reply) => {
-    return { hello: 'world' };
-});
+// Register routes
+//fastify.register(require('./routes/wasteRoutes'));
 
 // Start server
 const start = async () => {
