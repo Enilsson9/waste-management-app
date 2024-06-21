@@ -15,7 +15,7 @@ This project is a waste management application built using Vue.js for the fronte
 
 Before you begin, ensure you have met the following requirements:
 
-- Node.js (version 14 or higher)
+- Node.js (version 20 or higher)
 - npm (Node package manager)
 - MongoDB (You can use a local instance or a cloud instance like MongoDB Atlas)
 
@@ -26,7 +26,7 @@ Before you begin, ensure you have met the following requirements:
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/waste-management-app.git
+    git clone https://github.com/Enilsson9/waste-management-app.git
     cd waste-management-app/backend
     ```
 
