@@ -18,7 +18,7 @@ mongoose.connect(process.env.MONGODB_URI)
     });
 
 // Register routes
-//fastify.register(require('./routes/wasteRoutes'));
+fastify.register(require('./routes/wasteRoutes'), { prefix: '/wasteRoutes' });
 
 // Start server
 const start = async () => {
