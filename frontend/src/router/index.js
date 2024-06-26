@@ -1,17 +1,29 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router'; // Import from vue-router for Vue 3
 import WasteList from '../components/WasteList.vue';
-import AddWaste from '../components/AddWaste.vue';
-
-Vue.use(VueRouter);
+import WasteForm from '../components/WasteForm.vue';
 
 const routes = [
-    { path: '/', component: WasteList },
-    { path: '/add', component: AddWaste },
+    {
+        path: '/',
+        name: 'WasteList',
+        component: WasteList
+    },
+    {
+        path: '/waste/add',
+        name: 'AddWaste',
+        component: WasteForm
+    },
+    {
+        path: '/waste/edit/:id',
+        name: 'EditWaste',
+        component: WasteForm,
+        props: true
+    }
 ];
 
-const router = new VueRouter({
-    routes,
+const router = createRouter({
+    history: createWebHistory(),
+    routes
 });
 
 export default router;
