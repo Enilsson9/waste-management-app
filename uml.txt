@@ -1,0 +1,107 @@
++---------------------+
+|     WasteItem       |
++---------------------+
+| - id: int           |
+| - name: String      |
+| - type: WasteType   |
+| - quantity: double  |
+| - unit: String      |
++---------------------+
+| + getDetails(): String      |
+| + updateQuantity(amount: double): void |
++---------------------+
+
++---------------------+
+|     WasteType       |
++---------------------+
+| - id: int           |
+| - name: String      |
+| - description: String |
++---------------------+
+| + getTypeInfo(): String  |
+| + createWasteType(name: String, description: String): WasteType |
+| + readWasteType(id: int): WasteType  |
+| + updateWasteType(id: int, name: String, description: String): WasteType  |
+| + deleteWasteType(id: int): void  |
++---------------------+
+
++---------------------+
+|      Price          |
++---------------------+
+| - id: int           |
+| - wasteType: WasteType |
+| - pricePerUnit: double |
++---------------------+
+| + getPriceInfo(): String  |
+| + updatePrice(newPrice: double): void |
++---------------------+
+
++---------------------+
+|     Inventory       |
++---------------------+
+| - id: int           |
+| - wasteItems: List<WasteItem> |
++---------------------+
+| + addWasteItem(item: WasteItem): void  |
+| + removeWasteItem(item: WasteItem): void |
+| + getTotalQuantity(): double  |
+| + viewInventory(): List<WasteItem>  |
++---------------------+
+
++---------------------+
+|    Transaction      |
++---------------------+
+| - id: int           |
+| - wasteItem: WasteItem |
+| - quantity: double  |
+| - totalPrice: double |
+| - date: Date        |
++---------------------+
+| + getTransactionDetails(): String  |
++---------------------+
+
++---------------------+
+|       Invoice       |
++---------------------+
+| - id: int           |
+| - transactions: List<Transaction> |
+| - totalAmount: double |
+| - date: Date        |
++---------------------+
+| + getInvoiceDetails(): String  |
+| + calculateTotalAmount(): double |
+| + createInvoice(transactions: List<Transaction>): Invoice |
+| + readInvoice(id: int): Invoice  |
+| + updateInvoice(id: int, transactions: List<Transaction>): Invoice  |
+| + deleteInvoice(id: int): void  |
++---------------------+
+
++---------------------+
+|       Order         |
++---------------------+
+| - id: int           |
+| - wasteItem: WasteItem |
+| - quantity: double  |
+| - date: Date        |
++---------------------+
+| + createOrder(wasteItem: WasteItem, quantity: double): Order  |
+| + sendToCashier(order: Order): void  |
++---------------------+
+
++-----------------------------+
+| WasteManagementSystem       |
++-----------------------------+
+| - inventory: Inventory      |
+| - priceList: List<Price>    |
+| - transactions: List<Transaction> |
+| - invoices: List<Invoice>   |
++-----------------------------+
+| + addWasteItem(item: WasteItem): void |
+| + removeWasteItem(item: WasteItem): void |
+| + updateWastePrice(type: WasteType, newPrice: double): void |
+| + recordTransaction(transaction: Transaction): void |
+| + generateReport(): String |
+| + createInvoice(transactions: List<Transaction>): Invoice |
+| + viewInventory(): List<WasteItem> |
+| + viewInvoices(): List<Invoice> |
++-----------------------------+
