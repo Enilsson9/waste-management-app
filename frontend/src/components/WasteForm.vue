@@ -1,73 +1,64 @@
 <template>
     <div>
-        <h1>{{ isEdit ? 'Edit Waste' : 'Add Waste' }}</h1>
-        <form @submit.prevent="saveWaste">
-            <div>
-                <label>Type:</label>
-                <input v-model="waste.type" required />
-            </div>
-            <div>
-                <label>Description:</label>
-                <input v-model="waste.description" />
-            </div>
-            <div>
-                <label>Price per Kg:</label>
-                <input type="number" v-model="waste.pricePerKg" required />
-            </div>
-            <button type="submit">{{ isEdit ? 'Update' : 'Create' }}</button>
-        </form>
+      <ul>
+        <li v-for="waste in wastes" :key="waste._id">
+          {{ waste.name }} - {{ waste.description }} - {{ waste.quantity }}
+          <button @click="deleteWaste(waste._id)">Delete</button>
+        </li>
+      </ul>
+      <form @submit.prevent="createWaste">
+        <input v-model="newWaste.name" placeholder="Name" required>
+        <input v-model="newWaste.description" placeholder="Description" required>
+        <input v-model="newWaste.quantity" type="number" placeholder="Quantity" required>
+        <button type="submit">Add Waste</button>
+      </form>
     </div>
-</template>
-
-<script>
-import wasteService from '../services/api';
-
-export default {
+  </template>
+  
+  <script>
+  import api from '@/services/api';
+  
+  export default {
     data() {
-        return {
-            waste: {
-                type: '',
-                description: '',
-                pricePerKg: 0
-            },
-            isEdit: false
-        };
-    },
-    created() {
-        if (this.$route.params.id) {
-            this.isEdit = true;
-            this.fetchWaste(this.$route.params.id);
+      return {
+        wastes: [],
+        newWaste: {
+          name: '',
+          description: '',
+          quantity: 0
         }
+      };
     },
     methods: {
-        fetchWaste(id) {
-            wasteService.get(id)
-                .then(response => {
-                    this.waste = response.data;
-                })
-                .catch(error => {
-                    console.error("There was an error fetching the waste!", error);
-                });
-        },
-        saveWaste() {
-            if (this.isEdit) {
-                wasteService.update(this.waste._id, this.waste)
-                    .then(() => {
-                        this.$router.push({ name: 'WasteList' });
-                    })
-                    .catch(error => {
-                        console.error("There was an error updating the waste!", error);
-                    });
-            } else {
-                wasteService.create(this.waste)
-                    .then(() => {
-                        this.$router.push({ name: 'WasteList' });
-                    })
-                    .catch(error => {
-                        console.error("There was an error creating the waste!", error);
-                    });
-            }
+      async fetchWastes() {
+        try {
+          const response = await api.getAll();
+          this.wastes = response.data;
+        } catch (error) {
+          console.error('Error fetching wastes:', error);
         }
+      },
+      async createWaste() {
+        try {
+          const response = await api.create(this.newWaste);
+          this.wastes.push(response.data);
+          this.newWaste = { name: '', description: '', quantity: 0 };
+        } catch (error) {
+          console.error('Error creating waste:', error);
+        }
+      },
+      async deleteWaste(id) {
+        try {
+          await api.delete(id);
+          this.wastes = this.wastes.filter(waste => waste._id !== id);
+        } catch (error) {
+          console.error('Error deleting waste:', error);
+        }
+      }
+    },
+    created() {
+      this.fetchWastes();
     }
-};
-</script>
+  };
+  </script>
+  
