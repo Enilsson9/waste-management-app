@@ -1,11 +1,15 @@
 const mongoose = require('mongoose');
 
-const wasteSchema = new mongoose.Schema({
+const invoiceSchema = new mongoose.Schema({
     order: {
         type: String,
         required: true
     },
     payment: {
+        type: String,
+        required: true
+    },
+    status: {
         type: String,
         required: true
     },
@@ -15,6 +19,6 @@ const wasteSchema = new mongoose.Schema({
     }
 });
 
-const Invoice = mongoose.model('Invoice', wasteSchema);
+const Invoice = mongoose.model('Invoice', invoiceSchema);
 
 module.exports = Invoice;
