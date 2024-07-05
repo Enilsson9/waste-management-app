@@ -1,9 +1,9 @@
 const customerController = require('../controllers/customerController');
 
 async function customerRoutes(fastify, options) {
-  fastify.get('/customer', async (request, reply) => {
+  fastify.get('/customers', async (request, reply) => {
     try {
-      const customers = await customerController.getAllcustomer();
+      const customers = await customerController.getAllCustomers();
       return customers;
     } catch (err) {
       reply.code(500).send({ error: 'Internal Server Error', message: err.message });
@@ -12,8 +12,8 @@ async function customerRoutes(fastify, options) {
 
   fastify.post('/customer', async (request, reply) => {
     try {
-      const newcustomer = await customerController.addcustomer(request.body);
-      return newcustomer;
+      const newCustomer = await customerController.addCustomer(request.body);
+      return newCustomer;
     } catch (err) {
       reply.code(500).send({ error: 'Internal Server Error', message: err.message });
     }
@@ -21,7 +21,7 @@ async function customerRoutes(fastify, options) {
 
   fastify.put('/customer/:id', async (request, reply) => {
     try {
-      const updatedcustomer = await customerController.updatecustomer(request.params.id, request.body);
+      const updatedcustomer = await customerController.updateCustomer(request.params.id, request.body);
       return updatedcustomer;
     } catch (err) {
       reply.code(500).send({ error: 'Internal Server Error', message: err.message });
@@ -30,7 +30,7 @@ async function customerRoutes(fastify, options) {
 
   fastify.delete('/customer/:id', async (request, reply) => {
     try {
-      await customerController.deletecustomer(request.params.id);
+      await customerController.deleteCustomer(request.params.id);
       return { message: 'customer deleted successfully' };
     } catch (err) {
       reply.code(500).send({ error: 'Internal Server Error', message: err.message });

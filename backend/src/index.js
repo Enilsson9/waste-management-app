@@ -19,6 +19,10 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Register routes
 fastify.register(require('./routes/wasteRoutes'), { prefix: '/api' });
+fastify.register(require('./routes/orderRoutes'), { prefix: '/api' });
+fastify.register(require('./routes/invoiceRoutes'), { prefix: '/api' });
+fastify.register(require('./routes/customerRoutes'), { prefix: '/api' });
+
 
 // Start server
 const start = async () => {

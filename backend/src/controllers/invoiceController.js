@@ -1,7 +1,7 @@
 const Invoice = require('../models/Invoice');
 
 // Get all Invoices
-async function getAllInvoice() {
+async function getAllInvoices() {
     const Invoices = await Invoice.find();
     return Invoices;
 }
@@ -26,7 +26,7 @@ async function deleteInvoice(id) {
 }
 
 module.exports = {
-    getAllInvoice,
+    getAllInvoices,
     addInvoice,
     updateInvoice,
     deleteInvoice

@@ -1,7 +1,7 @@
 const Order = require('../models/Order');
 
 // Get all Orders
-async function getAllOrder() {
+async function getAllOrders() {
     const Orders = await Order.find();
     return Orders;
 }
@@ -26,7 +26,7 @@ async function deleteOrder(id) {
 }
 
 module.exports = {
-    getAllOrder,
+    getAllOrders,
     addOrder,
     updateOrder,
     deleteOrder
