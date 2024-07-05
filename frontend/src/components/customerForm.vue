@@ -2,7 +2,7 @@
     <div>
       <ul>
         <li v-for="customer in customers" :key="customer._id">
-          {{ customer.name }} - {{ customer.description }} - {{ customer.quantity }}
+          {{ customer.name }} - {{ customer.description }} - {{ customer.category }}
           <button @click="deleteCustomer(customer._id)">Delete</button>
         </li>
       </ul>

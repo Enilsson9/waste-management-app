@@ -1,7 +1,7 @@
 const orderController = require('../controllers/orderController');
 
 async function orderRoutes(fastify, options) {
-  fastify.get('/order', async (request, reply) => {
+  fastify.get('/orders', async (request, reply) => {
     try {
       const orders = await orderController.getAllorder();
       return orders;
@@ -10,7 +10,7 @@ async function orderRoutes(fastify, options) {
     }
   });
 
-  fastify.post('/order', async (request, reply) => {
+  fastify.post('/orders', async (request, reply) => {
     try {
       const neworder = await orderController.addorder(request.body);
       return neworder;

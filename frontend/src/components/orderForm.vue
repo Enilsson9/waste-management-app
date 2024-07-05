@@ -2,7 +2,7 @@
     <div>
       <ul>
         <li v-for="order in orders" :key="order._id">
-          {{ order.name }} - {{ order.description }} - {{ order.quantity }}
+          {{ order.typeOfWaste }} - {{ order.weight }} - {{ order.createdAt }}
           <button @click="deleteOrder(order._id)">Delete</button>
         </li>
       </ul>

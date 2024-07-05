@@ -2,7 +2,7 @@
     <div>
       <ul>
         <li v-for="invoice in invoices" :key="invoice._id">
-          {{ invoice.name }} - {{ invoice.description }} - {{ invoice.quantity }}
+          {{ invoice.order }} - {{ invoice.payment }} - {{ invoice.status }} - {{ invoice.createdAt }}
           <button @click="deleteInvoice(invoice._id)">Delete</button>
         </li>
       </ul>
