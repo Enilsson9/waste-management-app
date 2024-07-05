@@ -7,7 +7,7 @@
         </li>
       </ul>
       <form @submit.prevent="createinvoice">
-        <input v-model="newInvoice.name" placeholder="Order nr" required>
+        <input v-model="newInvoice.order" placeholder="Order nr" required>
         <input v-model="newInvoice.payment" placeholder="Payment" required>
         <input v-model="newInvoice.status" type="number" placeholder="Status" required>
         <button type="submit">Add invoice</button>
@@ -22,15 +22,15 @@
     data() {
       return {
         invoices: [],
-        newinvoice: {
-          name: '',
+        newInvoice: {
+          order: '',
           payment: '',
           status: 0
         }
       };
     },
     methods: {
-      async fetchinvoices() {
+      async fetchInvoices() {
         try {
           const response = await api.getAll();
           this.invoices = response.data;
@@ -40,9 +40,9 @@
       },
       async createInvoice() {
         try {
-          const response = await api.create(this.newinvoice);
+          const response = await api.createInvoice(this.newinvoice);
           this.invoices.push(response.data);
-          this.newinvoice = { name: '', description: '', quantity: 0 };
+          this.newInvoice = { name: '', description: '', quantity: 0 };
         } catch (error) {
           console.error('Error creating invoice:', error);
         }
@@ -57,7 +57,7 @@
       }
     },
     created() {
-      this.fetchinvoices();
+      this.fetchInvoices();
     }
   };
   </script>

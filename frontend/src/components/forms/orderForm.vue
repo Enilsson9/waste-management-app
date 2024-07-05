@@ -13,7 +13,6 @@
         <option v-for="waste in wasteTypes" :key="waste.id" :value="waste.id">{{ waste.name }}</option>
         </select>
 
-
         <input v-model="newOrder.description" placeholder="Description" required>
         <input v-model="newOrder.quantity" type="number" placeholder="Quantity" required>
         <button type="submit">Add order</button>
@@ -42,24 +41,24 @@
       };
     },
     methods: {
-      async fetchorders() {
+      async fetchOrders() {
         try {
-          const response = await api.getAll();
+          const response = await api.getAllOrders();
           this.orders = response.data;
         } catch (error) {
           console.error('Error fetching orders:', error);
         }
       },
-      async createorder() {
+      async createOrder() {
         try {
-          const response = await api.create(this.newOrder);
+          const response = await api.createOrder(this.newOrder);
           this.orders.push(response.data);
           this.newOrder = { name: '', description: '', quantity: 0 };
         } catch (error) {
           console.error('Error creating order:', error);
         }
       },
-      async deleteorder(id) {
+      async deleteOrder(id) {
         try {
           await api.delete(id);
           this.orders = this.orders.filter(order => order._id !== id);

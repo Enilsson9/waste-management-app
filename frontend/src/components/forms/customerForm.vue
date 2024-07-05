@@ -51,7 +51,7 @@
       },
       async createCustomer() {
         try {
-          const response = await api.create(this.newcustomer);
+          const response = await api.createCustomer(this.newcustomer);
           this.customers.push(response.data);
           this.newcustomer = { name: '', description: '', quantity: 0 };
         } catch (error) {

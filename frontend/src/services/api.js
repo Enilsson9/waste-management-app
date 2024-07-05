@@ -25,53 +25,53 @@ export default {
         return apiClient.delete(`/waste/${id}`);
     },
 
-    // Orders endpoints
+   // Orders endpoints
     getAllOrders() {
         return apiClient.get('/orders');
     },
-    /*getOrder(id) {
-        return apiClient.get(`/orders/${id}`);
+    getOrder(id) {
+        return apiClient.get(`/order/${id}`);
     },
     createOrder(data) {
-        return apiClient.post('/orders', data);
+        return apiClient.post('/order', data);
     },
     updateOrder(id, data) {
-        return apiClient.put(`/orders/${id}`, data);
+        return apiClient.put(`/order/${id}`, data);
     },
     deleteOrder(id) {
-        return apiClient.delete(`/orders/${id}`);
-    },*/
+        return apiClient.delete(`/order/${id}`);
+    },
 
     // Customers endpoints
     getAllCustomers() {
         return apiClient.get('/customers');
     },
-    /*getCustomer(id) {
-        return apiClient.get(`/customers/${id}`);
+    getCustomer(id) {
+        return apiClient.get(`/customer/${id}`);
     },
     createCustomer(data) {
-        return apiClient.post('/customers', data);
+        return apiClient.post('/customer', data);
     },
     updateCustomer(id, data) {
-        return apiClient.put(`/customers/${id}`, data);
+        return apiClient.put(`/customer/${id}`, data);
     },
     deleteCustomer(id) {
-        return apiClient.delete(`/customers/${id}`);
-    },*/
+        return apiClient.delete(`/customer/${id}`);
+    },
     // Invoices endpoints
     getAllInvoices() {
         return apiClient.get('/invoices');
     },
-    /*getInvoice(id) {
-        return apiClient.get(`/invoices/${id}`);
+    getInvoice(id) {
+        return apiClient.get(`/invoice/${id}`);
     },
     createInvoice(data) {
-        return apiClient.post('/invoices', data);
+        return apiClient.post('/invoice', data);
     },
     updateInvoice(id, data) {
-        return apiClient.put(`/invoices/${id}`, data);
+        return apiClient.put(`/invoice/${id}`, data);
     },
     deleteInvoice(id) {
-        return apiClient.delete(`/invoices/${id}`);
-    }*/
+        return apiClient.delete(`/invoice/${id}`);
+    }
 };

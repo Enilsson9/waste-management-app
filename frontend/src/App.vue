@@ -4,7 +4,6 @@
       <router-link to="/">Home</router-link>
       <router-link to="/orders">Orders</router-link>
       <router-link to="/invoices">Invoices</router-link>
-      <router-link to="/waste">Waste</router-link>
       <router-link to="/customers">Customers</router-link>
     </nav>
     <router-view/>

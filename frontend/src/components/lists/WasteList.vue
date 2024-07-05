@@ -9,10 +9,11 @@
             </li>
         </ul>
     </div>
+    <router-link to="/waste/add">Add new Waste</router-link>
 </template>
 
 <script>
-import wasteService from '../services/api';
+import wasteService from '../../services/api';
 
 export default {
     data() {
@@ -25,7 +26,7 @@ export default {
     },
     methods: {
         fetchWastes() {
-            wasteService.getAll()
+            wasteService.getAllWaste()
                 .then(response => {
                     this.wastes = response.data;
                 })

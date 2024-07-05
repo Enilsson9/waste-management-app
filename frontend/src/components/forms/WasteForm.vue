@@ -40,7 +40,7 @@
       },
       async createWaste() {
         try {
-          const response = await api.create(this.newWaste);
+          const response = await api.createWaste(this.newWaste);
           this.wastes.push(response.data);
           this.newWaste = { name: '', description: '', quantity: 0 };
         } catch (error) {
