@@ -32,7 +32,7 @@ export default {
     getOrder(id) {
         return apiClient.get(`/order/${id}`);
     },
-    createOrder(data) {
+    addOrder(data) {
         return apiClient.post('/order', data);
     },
     updateOrder(id, data) {
