@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const invoiceSchema = new mongoose.Schema({
     order: {
-        type: String,
+        type: Number,
         required: true
     },
     payment: {

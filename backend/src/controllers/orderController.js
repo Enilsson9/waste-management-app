@@ -9,6 +9,7 @@ async function getAllOrders() {
 // Add a new Order
 async function addOrder(OrderData) {
     const newOrder = new Order(OrderData);
+    console.log(newOrder);
     await newOrder.save();
     return newOrder;
 }
