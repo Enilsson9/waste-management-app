@@ -22,6 +22,8 @@ fastify.register(require('./routes/wasteRoutes'), { prefix: '/api' });
 fastify.register(require('./routes/orderRoutes'), { prefix: '/api' });
 fastify.register(require('./routes/invoiceRoutes'), { prefix: '/api' });
 fastify.register(require('./routes/customerRoutes'), { prefix: '/api' });
+fastify.register(require('./routes/loginRoutes'), { prefix: '/api' });
+fastify.register(require('./routes/registerRoutes'), { prefix: '/api' });
 
 
 // Start server
