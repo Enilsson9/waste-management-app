@@ -41,10 +41,10 @@
             // Redirect based on role
             switch (response.data.role) {
               case 'admin':
-                router.push({ name: 'WasteList' }); // Adjust route names as necessary
+                router.push({ name: 'WasteList' }); 
                 break;
               case 'cashier':
-                router.push({ name: 'invoiceList' }); // Ensure these route names match your router configuration
+                router.push({ name: 'invoiceList' }); 
                 break;
               case 'weigher':
                 router.push({ name: 'orderList' });

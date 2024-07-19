@@ -89,15 +89,14 @@ export default {
 }
 
 .logout-button {
-  /* Your logout button styles */
-  background-color: #f56c6c; /* Example style */
+  background-color: #f56c6c; 
   color: white;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
 }
 .logout-button:hover {
-  background-color: #f44336; /* Example hover style */
+  background-color: #f44336; 
 }
 
 

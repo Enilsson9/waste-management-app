@@ -58,7 +58,6 @@ router.beforeEach((to, from, next) => {
     if (!token) {
       next('/');
     } else if (to.meta.roles && !to.meta.roles.includes(userRole)) {
-      // Set a flag or state to handle access denial in components
       window.alert('You do not have access to this page.');
       next(false); 
     } else {
