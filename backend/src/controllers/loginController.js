@@ -26,7 +26,7 @@ const login = async (request, reply) => {
     // Generate a JWT token
     const token = jwt.sign({ userId: user._id, role: user.role }, 'your-secret-key', { expiresIn: '1h' });
 
-    reply.code(200).send({ message: 'Login successful', token });
+    reply.code(200).send({ message: 'Login successful', token, role: user.role });
   } catch (error) {
     reply.code(500).send({ message: 'Login failed', error: error.message });
   }
