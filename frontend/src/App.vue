@@ -1,12 +1,13 @@
 <template>
   <div id="app">
-    <header class="navbar">
+    <header v-if="!isLoginPage" class="navbar">
       <h1 class="logo">Waste Management App</h1>
       <nav class="nav-links">
-        <router-link to="/" class="nav-link" active-class="active">Home</router-link>
+        <router-link to="/waste" class="nav-link" active-class="active">Waste</router-link>
         <router-link to="/orders" class="nav-link" active-class="active">Orders</router-link>
         <router-link to="/invoices" class="nav-link" active-class="active">Invoices</router-link>
         <router-link to="/customers" class="nav-link" active-class="active">Customers</router-link>
+        <button @click="logout" class="logout-button">Logout</button>
       </nav>
     </header>
     <router-view />
@@ -14,9 +15,30 @@
 </template>
 
 <script>
+import { ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
 export default {
-  name: 'App'
-};
+  name: 'App',
+  setup() {
+    const route = useRoute();
+    const router = useRouter();
+    const isLoginPage = ref(route.path === '/'); // Initial check
+
+    // Watch for changes in the route and update the isLoginPage
+    watch(() => route.path, (newPath) => {
+      isLoginPage.value = newPath === '/';
+    });
+
+    // Logout method
+    function logout() {
+      localStorage.removeItem('authToken'); // Clear token from local storage
+      router.push('/'); // Redirect to login page
+    }
+
+    return { isLoginPage, logout };
+  }
+}
 </script>
 
 <style scoped>
@@ -62,5 +84,17 @@ export default {
 
 .active {
   color: #42b983;
+}
+
+.logout-button {
+  /* Your logout button styles */
+  background-color: #f56c6c; /* Example style */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+.logout-button:hover {
+  background-color: #f44336; /* Example hover style */
 }
 </style>

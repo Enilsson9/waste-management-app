@@ -8,6 +8,10 @@ const apiClient = axios.create({
 });
 
 export default {
+    //Login
+    login(payload) {
+        return apiClient.post('/login', payload);
+    },
     // Waste endpoints
     getAllWaste() {
         return apiClient.get('/waste');

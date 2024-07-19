@@ -28,12 +28,12 @@
     </button>
 
     <!-- Waste Form -->
-    <form v-if="showAddWasteForm" @submit.prevent="submitForm" class="form">
-      <input v-model="newWaste.name" placeholder="Name" required>
-      <input v-model="newWaste.description" placeholder="Description" required>
-      <input v-model.number="newWaste.quantity" type="number" placeholder="Quantity" required>
+    <form v-if="showAddWasteForm" @submit.prevent="submitForm" class="data-form">
+      <input v-model="newWaste.name" placeholder="Name" required  class="input-field">
+      <input v-model="newWaste.description" placeholder="Description" required  class="input-field">
+      <input v-model.number="newWaste.quantity" type="number" placeholder="Quantity" required  class="input-field">
       <div class="form-buttons">
-        <button type="submit" class="btn confirm-add-btn">{{ isEditing ? 'Update' : 'Add' }} Waste</button>
+        <button type="submit" class="btn submit-btn">{{ isEditing ? 'Update' : 'Add' }} Waste</button>
         <button type="button" @click="cancelEdit" v-if="isEditing" class="btn cancel-btn">Cancel</button>
       </div>
     </form>

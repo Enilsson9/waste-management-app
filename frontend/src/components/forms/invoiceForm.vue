@@ -30,8 +30,19 @@
     <!-- Invoice Form -->
     <form v-if="showForm" @submit.prevent="submitForm" class="data-form">
       <input v-model="newInvoice.order" type="number" placeholder="Order nr" required class="input-field">
-      <input v-model="newInvoice.payment" placeholder="Payment" required class="input-field">
-      <input v-model="newInvoice.status" type="number" placeholder="Status" required class="input-field">
+
+      <select v-model="newInvoice.payment" class="input-field">
+        <option v-for="paymentType in paymentTypes" :key="paymentType.id" :value="paymentType.name">
+          {{ paymentType.name }}
+        </option>
+      </select>
+
+      <select v-model="newInvoice.status" class="input-field">
+        <option v-for="statusType in statusTypes" :key="statusType.id" :value="statusType.name">
+          {{ statusType.name }}
+        </option>
+      </select>
+
       <div class="form-buttons">
         <button type="submit" class="btn submit-btn">{{ isEditing ? 'Update' : 'Add' }} Invoice</button>
         <button type="button" @click="cancelEdit" v-if="isEditing" class="btn cancel-btn">Cancel</button>
@@ -61,8 +72,20 @@ export default {
       newInvoice: {
         order: '',
         payment: '',
-        status: 0
+        status: ''
       },
+      paymentTypes: [
+        { id: 1, name: 'Paypal' },
+        { id: 2, name: 'Credit card' },
+        { id: 3, name: 'Cash' },
+        { id: 4, name: 'Bank' }
+      ],
+      statusTypes: [
+        { id: 1, name: 'Paid' },
+        { id: 2, name: 'Unpaid' },
+        { id: 3, name: 'Partially paid' },
+        { id: 4, name: 'Cancelled' }
+      ],
       showForm: false,
       showDeleteModal: false,
       deleteInvoiceId: null,

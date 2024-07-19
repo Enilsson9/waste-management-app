@@ -35,7 +35,7 @@
       <input v-model.number="newOrder.weight" type="number" placeholder="Weight" required class="input-field">
       <div class="form-buttons">
         <button type="submit" class="btn submit-btn">{{ isEditing ? 'Update' : 'Add' }} Order</button>
-        <button type="button" @click="cancelEdit" v-if="isEditing" class="btn cancel-btn">Cancel</button>
+        <button type="button" @click="cancelEdit" class="btn cancel-btn">Cancel</button>
       </div>
     </form>
 
