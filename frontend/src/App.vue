@@ -43,6 +43,8 @@ export default {
 
 <style scoped>
 /* Scoped styles to apply only to this component */
+
+
 #app {
   font-family: 'Arial', sans-serif;
   text-align: center;
@@ -96,5 +98,21 @@ export default {
 }
 .logout-button:hover {
   background-color: #f44336; /* Example hover style */
+}
+
+
+
+.nav-link.no-access {
+  color: red;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.nav-link.no-access::after {
+  content: ' (No Access)';
+  font-size: 0.8em;
+  color: red;
+  position: absolute;
+  right: 0;
 }
 </style>

@@ -17,47 +17,54 @@
   
   <script>
   import api from '@/services/api';
+  import { useRouter } from 'vue-router';
+  import { ref } from 'vue';
   
   export default {
-    data() {
-      return {
-        username: '',
-        password: ''
-      };
-    },
-    methods: {
-      async login() {
-        const payload = {
-          username: this.username,
-          password: this.password
-        };
+    setup() {
+      const router = useRouter();
+      const username = ref('');
+      const password = ref('');
+  
+      const login = async () => {
+        const payload = { username: username.value, password: password.value };
   
         try {
           const response = await api.login(payload);
-          // Handle successful login
-          console.log('Login successful:', response.data);
-          
-          // Store token in local storage
-          localStorage.setItem('authToken', response.data.token);
+          console.log('Login response:', response.data);
   
-          // Redirect to a protected route
-          this.$router.push({ name: 'WasteList' });
+          if (response.data && response.data.token && response.data.role) {
+            // Store token and role in localStorage
+            localStorage.setItem('authToken', response.data.token);
+            localStorage.setItem('userRole', response.data.role);
+            
+            // Redirect based on role
+            switch (response.data.role) {
+              case 'admin':
+                router.push({ name: 'WasteList' }); // Adjust route names as necessary
+                break;
+              case 'cashier':
+                router.push({ name: 'invoiceList' }); // Ensure these route names match your router configuration
+                break;
+              case 'weigher':
+                router.push({ name: 'orderList' });
+                break;
+              default:
+                router.push('/'); // Redirect to login or a default page
+            }
+          } else {
+            console.error('Invalid response format:', response.data);
+          }
         } catch (error) {
-          // Handle login error
           console.error('Login failed:', error);
           alert('Login failed. Please check your credentials and try again.');
         }
-      },
-      logout() {
-        // Clear token from local storage
-        localStorage.removeItem('authToken');
-        // Redirect to login page
-        this.$router.push('/');
-      }
+      };
+  
+      return { username, password, login };
     }
-  };
+  }
   </script>
-
   
   <style scoped>
   .login-container {

@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <div v-if="accessDenied" class="warning">
+      <p>You do not have access to this page.</p>
+    </div>
     <table class="data-table">
       <thead>
         <tr>
@@ -53,6 +56,7 @@
 
 <script>
 import api from '@/services/api';
+
 
 export default {
   data() {

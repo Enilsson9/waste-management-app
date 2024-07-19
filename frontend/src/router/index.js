@@ -50,19 +50,23 @@ const router = createRouter({
     routes
 });
 
-// Route guard
 router.beforeEach((to, from, next) => {
-    const isAuthenticated = !!localStorage.getItem('authToken');
-    
-    if (to.matched.some(record => record.meta.requiresAuth)) {
-      if (!isAuthenticated) {
-        next('/'); // Redirect to login if not authenticated
-      } else {
-        next(); // Allow navigation if authenticated
-      }
+  const token = localStorage.getItem('authToken');
+  const userRole = localStorage.getItem('userRole');
+  
+  if (to.meta.requiresAuth) {
+    if (!token) {
+      next('/');
+    } else if (to.meta.roles && !to.meta.roles.includes(userRole)) {
+      // Set a flag or state to handle access denial in components
+      window.alert('You do not have access to this page.');
+      next(false); 
     } else {
-      next(); // Always allow navigation if route does not require authentication
+      next();
     }
-  });
+  } else {
+    next();
+  }
+});
 
 export default router;
