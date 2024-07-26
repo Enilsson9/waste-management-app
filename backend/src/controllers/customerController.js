@@ -1,29 +1,47 @@
 const Customer = require('../models/Customer');
 
-// Get all customers
-async function getAllCustomers() {
-    const customers = await Customer.find();
-    return customers;
-}
+const getAllCustomers = async () => {
+    try {
+        const customers = await Customer.find();
+        return customers;
+    } catch (error) {
+        throw new Error(`Error fetching customers: ${error.message}`);
+    }
+};
 
-// Add a new waste
-async function addCustomer(data) {
-    const newCustomer = new Customer(data);
-    await newCustomer.save();
-    return newCustomer;
-}
+const addCustomer = async (customerData) => {
+    try {
+        const newCustomer = new Customer(customerData);
+        await newCustomer.save();
+        return newCustomer;
+    } catch (error) {
+        throw new Error(`Error adding customer: ${error.message}`);
+    }
+};
 
-// Update a Customer by ID
-async function updateCustomer(id, data) {
-    const updatedCustomer = await Customer.findByIdAndUpdate(id, data, { new: true });
-    return updatedCustomer;
-}
+const updateCustomer = async (id, customerData) => {
+    try {
+        const updatedCustomer = await Customer.findByIdAndUpdate(id, customerData, { new: true });
+        if (!updatedCustomer) {
+            throw new Error('Customer not found');
+        }
+        return updatedCustomer;
+    } catch (error) {
+        throw new Error(`Error updating customer: ${error.message}`);
+    }
+};
 
-// Delete a Customer by ID
-async function deleteCustomer(id) {
-    const deletedCustomer = await Customer.findByIdAndDelete(id);
-    return deletedCustomer;
-}
+const deleteCustomer = async (id) => {
+    try {
+        const deletedCustomer = await Customer.findByIdAndDelete(id);
+        if (!deletedCustomer) {
+            throw new Error('Customer not found');
+        }
+        return { message: 'Customer deleted successfully' };
+    } catch (error) {
+        throw new Error(`Error deleting customer: ${error.message}`);
+    }
+};
 
 module.exports = {
     getAllCustomers,

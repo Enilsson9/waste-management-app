@@ -12,8 +12,8 @@ async function invoiceRoutes(fastify, options) {
 
   fastify.post('/invoice', async (request, reply) => {
     try {
-      const newinvoice = await invoiceController.addInvoice(request.body);
-      return newinvoice;
+      const newInvoice = await invoiceController.addInvoice(request.body);
+      return newInvoice;
     } catch (err) {
       reply.code(500).send({ error: 'Internal Server Error', message: err.message });
     }
@@ -21,8 +21,8 @@ async function invoiceRoutes(fastify, options) {
 
   fastify.put('/invoice/:id', async (request, reply) => {
     try {
-      const updatedinvoice = await invoiceController.updateInvoice(request.params.id, request.body);
-      return updatedinvoice;
+      const updatedInvoice = await invoiceController.updateInvoice(request.params.id, request.body);
+      return updatedInvoice;
     } catch (err) {
       reply.code(500).send({ error: 'Internal Server Error', message: err.message });
     }
@@ -31,7 +31,7 @@ async function invoiceRoutes(fastify, options) {
   fastify.delete('/invoice/:id', async (request, reply) => {
     try {
       await invoiceController.deleteInvoice(request.params.id);
-      return { message: 'invoice deleted successfully' };
+      return { message: 'Invoice deleted successfully' };
     } catch (err) {
       reply.code(500).send({ error: 'Internal Server Error', message: err.message });
     }

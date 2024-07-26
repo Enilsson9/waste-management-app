@@ -1,12 +1,18 @@
 const fastify = require('fastify')({ logger: true });
 const mongoose = require('mongoose');
 const fastifyCors = require('@fastify/cors');
+const fastifyFormbody = require('@fastify/formbody');
+const fastifySensible = require('@fastify/sensible');
 require('dotenv').config();
 
 // Enable CORS
 fastify.register(fastifyCors, { 
     origin: '*' 
 });
+
+// Register body parser and sensible plugins
+fastify.register(fastifyFormbody);
+fastify.register(fastifySensible);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
@@ -24,7 +30,6 @@ fastify.register(require('./routes/invoiceRoutes'), { prefix: '/api' });
 fastify.register(require('./routes/customerRoutes'), { prefix: '/api' });
 fastify.register(require('./routes/loginRoutes'), { prefix: '/api' });
 fastify.register(require('./routes/registerRoutes'), { prefix: '/api' });
-
 
 // Start server
 const start = async () => {

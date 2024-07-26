@@ -12,8 +12,8 @@ async function orderRoutes(fastify, options) {
 
   fastify.post('/order', async (request, reply) => {
     try {
-      const neworder = await orderController.addOrder(request.body);
-      return neworder;
+      const newOrder = await orderController.addOrder(request.body);
+      return newOrder;
     } catch (err) {
       reply.code(500).send({ error: 'Internal Server Error', message: err.message });
     }
@@ -21,8 +21,8 @@ async function orderRoutes(fastify, options) {
 
   fastify.put('/order/:id', async (request, reply) => {
     try {
-      const updatedorder = await orderController.updateOrder(request.params.id, request.body);
-      return updatedorder;
+      const updatedOrder = await orderController.updateOrder(request.params.id, request.body);
+      return updatedOrder;
     } catch (err) {
       reply.code(500).send({ error: 'Internal Server Error', message: err.message });
     }
@@ -31,7 +31,7 @@ async function orderRoutes(fastify, options) {
   fastify.delete('/order/:id', async (request, reply) => {
     try {
       await orderController.deleteOrder(request.params.id);
-      return { message: 'order deleted successfully' };
+      return { message: 'Order deleted successfully' };
     } catch (err) {
       reply.code(500).send({ error: 'Internal Server Error', message: err.message });
     }

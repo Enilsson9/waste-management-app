@@ -5,17 +5,10 @@ const customerSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    description: {
+    type: {
         type: String,
+        enum: ['internal', 'wholesale', 'public'],
         required: true
-    },
-    category: {
-        type: String,
-        required: true
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
     }
 });
 

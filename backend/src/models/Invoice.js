@@ -1,21 +1,30 @@
 const mongoose = require('mongoose');
 
 const invoiceSchema = new mongoose.Schema({
-    order: {
-        type: Number,
+    invoiceId: {
+        type: String,
+        default: () => Math.floor(100000 + Math.random() * 900000).toString(),
+        unique: true
+    },
+    orderId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order',
         required: true
     },
-    payment: {
+    paymentMethod: {
         type: String,
+        enum: ['cash', 'credit_card', 'bank_transfer', 'mobile_payment'],
         required: true
     },
     status: {
         type: String,
+        enum: ['paid', 'unpaid', 'cancelled'],
         required: true
     },
-    createdAt: {
+    timestamp: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        required: true
     }
 });
 

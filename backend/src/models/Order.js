@@ -1,17 +1,44 @@
 const mongoose = require('mongoose');
 
-const orderSchema = new mongoose.Schema({
-    typeOfWaste: {
-        type: String,
+const itemSchema = new mongoose.Schema({
+    material: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Waste',
         required: true
     },
     weight: {
         type: Number,
         required: true
+    }
+});
+
+const orderSchema = new mongoose.Schema({
+    orderId: {
+        type: String,
+        default: () => Math.floor(100000 + Math.random() * 900000).toString(),
+        unique: true
     },
-    createdAt: {
+    customer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Customer',
+        required: true
+    },
+    items: [itemSchema],
+    status: {
+        type: String,
+        enum: ['pending', 'completed', 'canceled'],
+        default: 'pending',
+        required: true
+    },
+    timestamp: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        required: true
+    },
+    totalPrice: {
+        type: Number,
+        required: true,
+        default: 0
     }
 });
 
