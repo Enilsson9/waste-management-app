@@ -3,8 +3,11 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th>Order</th>
-          <th>Payment</th>
+          <th>Invoice ID</th>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Total Price</th>
+          <th>Payment Method</th>
           <th>Status</th>
           <th>Created At</th>
           <th>Actions</th>
@@ -12,10 +15,13 @@
       </thead>
       <tbody>
         <tr v-for="invoice in invoices" :key="invoice._id" class="data-item">
-          <td>{{ invoice.order }}</td>
-          <td>{{ invoice.payment }}</td>
+          <td>{{ invoice.invoiceId }}</td>
+          <td>{{ invoice.orderId ? invoice.orderId.orderId : 'N/A' }}</td>
+          <td>{{ invoice.orderId && invoice.orderId.customer ? invoice.orderId.customer.name : 'N/A' }}</td>
+          <td>{{ invoice.orderId ? invoice.orderId.totalPrice : 'N/A' }}</td>
+          <td>{{ invoice.paymentMethod }}</td>
           <td>{{ invoice.status }}</td>
-          <td>{{ invoice.createdAt }}</td>
+          <td>{{ new Date(invoice.timestamp).toLocaleString() }}</td>
           <td class="action-buttons">
             <button class="btn edit-btn" @click="editInvoice(invoice)">Edit</button>
             <button class="btn delete-btn" @click="confirmDeleteInvoice(invoice)">Delete</button>
@@ -29,23 +35,25 @@
 
     <!-- Invoice Form -->
     <form v-if="showForm" @submit.prevent="submitForm" class="data-form">
-      <input v-model="newInvoice.order" type="number" placeholder="Order nr" required class="input-field">
-
-      <select v-model="newInvoice.payment" class="input-field">
-        <option v-for="paymentType in paymentTypes" :key="paymentType.id" :value="paymentType.name">
-          {{ paymentType.name }}
-        </option>
+      <select v-model="newInvoice.orderId" required class="input-field">
+        <option value="" disabled>Select Order</option>
+        <option v-for="order in orders" :key="order._id" :value="order._id">{{ order.orderId }}</option>
       </select>
-
-      <select v-model="newInvoice.status" class="input-field">
-        <option v-for="statusType in statusTypes" :key="statusType.id" :value="statusType.name">
-          {{ statusType.name }}
-        </option>
+      <select v-model="newInvoice.paymentMethod" required class="input-field">
+        <option value="" disabled>Select Payment Method</option>
+        <option value="cash">Cash</option>
+        <option value="credit_card">Credit Card</option>
+        <option value="bank_transfer">Bank Transfer</option>
+        <option value="mobile_payment">Mobile Payment</option>
       </select>
-
+      <select v-model="newInvoice.status" required class="input-field">
+        <option value="paid">Paid</option>
+        <option value="unpaid">Unpaid</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
       <div class="form-buttons">
         <button type="submit" class="btn submit-btn">{{ isEditing ? 'Update' : 'Add' }} Invoice</button>
-        <button type="button" @click="cancelEdit" v-if="isEditing" class="btn cancel-btn">Cancel</button>
+        <button type="button" @click="cancelEdit" class="btn cancel-btn">Cancel</button>
       </div>
     </form>
 
@@ -69,28 +77,22 @@ export default {
   data() {
     return {
       invoices: [],
+      orders: [],
       newInvoice: {
-        order: '',
-        payment: '',
-        status: ''
+        orderId: '',
+        paymentMethod: '',
+        status: 'unpaid'
       },
-      paymentTypes: [
-        { id: 1, name: 'Paypal' },
-        { id: 2, name: 'Credit card' },
-        { id: 3, name: 'Cash' },
-        { id: 4, name: 'Bank' }
-      ],
-      statusTypes: [
-        { id: 1, name: 'Paid' },
-        { id: 2, name: 'Unpaid' },
-        { id: 3, name: 'Partially paid' },
-        { id: 4, name: 'Cancelled' }
-      ],
       showForm: false,
       showDeleteModal: false,
       deleteInvoiceId: null,
-      isEditing: false
+      isEditing: false,
+      editInvoiceId: null
     };
+  },
+  created() {
+    this.fetchInvoices();
+    this.fetchOrders();
   },
   methods: {
     async fetchInvoices() {
@@ -99,7 +101,15 @@ export default {
         this.invoices = response.data;
       } catch (error) {
         console.error('Error fetching invoices:', error);
-      } 
+      }
+    },
+    async fetchOrders() {
+      try {
+        const response = await api.getAllOrders();
+        this.orders = response.data;
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      }
     },
     toggleForm(show) {
       this.showForm = show;
@@ -108,14 +118,16 @@ export default {
       }
     },
     async submitForm() {
+      console.log('Submitting form:', this.newInvoice); // Debugging log
       if (this.isEditing) {
         await this.updateInvoice();
       } else {
-        await this.createInvoice();
+        await this.addInvoice();
       }
     },
-    async createInvoice() {
+    async addInvoice() {
       try {
+        console.log('Creating invoice:', this.newInvoice); // Debugging log
         const response = await api.createInvoice(this.newInvoice);
         this.invoices.push(response.data);
         this.resetForm();
@@ -125,18 +137,17 @@ export default {
     },
     async updateInvoice() {
       try {
-        await api.updateInvoice(this.editInvoiceId, this.newInvoice);
+        console.log('Updating invoice:', this.newInvoice); // Debugging log
+        const response = await api.updateInvoice(this.editInvoiceId, this.newInvoice);
         const index = this.invoices.findIndex(invoice => invoice._id === this.editInvoiceId);
         if (index !== -1) {
-          this.invoices.splice(index, 1, { ...this.newInvoice, _id: this.editInvoiceId });
+          this.invoices.splice(index, 1, response.data);
         }
         this.resetForm();
       } catch (error) {
         console.error('Error updating invoice:', error);
       }
     },
-
-    
     async deleteInvoice() {
       try {
         await api.deleteInvoice(this.deleteInvoiceId);
@@ -155,23 +166,32 @@ export default {
       this.deleteInvoiceId = null;
     },
     editInvoice(invoice) {
-      this.newInvoice = { ...invoice };
+      this.newInvoice = {
+        orderId: invoice.orderId._id,
+        paymentMethod: invoice.paymentMethod,
+        status: invoice.status
+      };
       this.editInvoiceId = invoice._id;
       this.isEditing = true;
       this.showForm = true;
     },
+    cancelEdit() {
+      this.resetForm();
+    },
     resetForm() {
-      this.isEditing = false;
       this.newInvoice = {
-        order: '',
-        payment: '',
-        status: 0
+        orderId: '',
+        paymentMethod: '',
+        status: 'unpaid'
       };
+      this.isEditing = false;
+      this.editInvoiceId = null;
       this.showForm = false;
     }
-  },
-  created() {
-    this.fetchInvoices();
   }
 };
 </script>
+
+<style>
+/* Add your styles here */
+</style>

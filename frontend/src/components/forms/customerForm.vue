@@ -4,16 +4,14 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Description</th>
-          <th>Category</th>
+          <th>Type</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="customer in customers" :key="customer._id" class="data-item">
           <td>{{ customer.name }}</td>
-          <td>{{ customer.description }}</td>
-          <td>{{ customer.category }}</td>
+          <td>{{ customer.type }}</td>
           <td class="action-buttons">
             <button class="btn edit-btn" @click="editCustomer(customer)">Edit</button>
             <button class="btn delete-btn" @click="confirmDeleteCustomer(customer)">Delete</button>
@@ -23,20 +21,22 @@
     </table>
 
     <!-- Toggle Add New Customer Button -->
-    <button v-if="!showForm" class="btn add-btn" @click="toggleForm(true)">Add New Customer</button>
+    <button @click="toggleAddCustomerForm" class="btn add-btn">
+      {{ showAddCustomerForm ? "Cancel" : "Add Customer" }}
+    </button>
 
     <!-- Customer Form -->
-    <form v-if="showForm" @submit.prevent="submitForm" class="data-form">
+    <form v-if="showAddCustomerForm" @submit.prevent="submitForm" class="data-form">
       <input v-model="newCustomer.name" placeholder="Name" required class="input-field">
-      <input v-model="newCustomer.description" placeholder="Description" required class="input-field">
-      <select v-model="newCustomer.category" class="input-field">
-        <option v-for="customerType in customerTypes" :key="customerType.id" :value="customerType.name">
-          {{ customerType.name }}
+      <select v-model="newCustomer.type" required class="input-field">
+        <option value="" disabled>Select Type</option>
+        <option v-for="customerType in customerTypes" :key="customerType" :value="customerType">
+          {{ customerType }}
         </option>
       </select>
       <div class="form-buttons">
         <button type="submit" class="btn submit-btn">{{ isEditing ? 'Update' : 'Add' }} Customer</button>
-        <button type="button" @click="cancelEdit" v-if="isEditing" class="btn cancel-btn">Cancel</button>
+        <button type="button" @click="cancelEdit" class="btn cancel-btn">Cancel</button>
       </div>
     </form>
 
@@ -62,34 +62,32 @@ export default {
       customers: [],
       newCustomer: {
         name: '',
-        description: '',
-        category: ''
+        type: ''
       },
-      customerTypes: [
-        { id: 1, name: 'Regular' },
-        { id: 2, name: 'Business' },
-        { id: 3, name: 'Premium' },
-        { id: 4, name: 'Internal' }
-      ],
-      showForm: false,
+      customerTypes: ['internal', 'wholesale', 'public'],
+      showAddCustomerForm: false,
       showDeleteModal: false,
       deleteCustomerId: null,
       isEditing: false,
       editCustomerId: null
     };
   },
+  created() {
+    this.fetchCustomers();
+  },
   methods: {
     async fetchCustomers() {
       try {
         const response = await api.getAllCustomers();
+        console.log('Fetched customers:', response.data);
         this.customers = response.data;
       } catch (error) {
         console.error('Error fetching customers:', error);
       }
     },
-    toggleForm(show) {
-      this.showForm = show;
-      if (!show) {
+    toggleAddCustomerForm() {
+      this.showAddCustomerForm = !this.showAddCustomerForm;
+      if (!this.showAddCustomerForm) {
         this.resetForm();
       }
     },
@@ -121,6 +119,10 @@ export default {
         console.error('Error updating customer:', error);
       }
     },
+    confirmDeleteCustomer(customer) {
+      this.showDeleteModal = true;
+      this.deleteCustomerId = customer._id;
+    },
     async deleteCustomer() {
       try {
         await api.deleteCustomer(this.deleteCustomerId);
@@ -130,10 +132,6 @@ export default {
         console.error('Error deleting customer:', error);
       }
     },
-    confirmDeleteCustomer(customer) {
-      this.showDeleteModal = true;
-      this.deleteCustomerId = customer._id;
-    },
     closeDeleteModal() {
       this.showDeleteModal = false;
       this.deleteCustomerId = null;
@@ -142,23 +140,24 @@ export default {
       this.newCustomer = { ...customer };
       this.editCustomerId = customer._id;
       this.isEditing = true;
-      this.showForm = true;
+      this.showAddCustomerForm = true;
     },
     cancelEdit() {
       this.resetForm();
     },
     resetForm() {
-      this.isEditing = false;
       this.newCustomer = {
         name: '',
-        description: '',
-        category: ''
+        type: ''
       };
-      this.showForm = false;
+      this.isEditing = false;
+      this.editCustomerId = null;
+      this.showAddCustomerForm = false;
     }
-  },
-  created() {
-    this.fetchCustomers();
   }
 };
 </script>
+
+<style>
+/* Add your styles here */
+</style>

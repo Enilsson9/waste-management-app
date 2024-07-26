@@ -7,16 +7,18 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Description</th>
-          <th>Quantity</th>
+          <th>Price (Public)</th>
+          <th>Price (Internal)</th>
+          <th>Price (Wholesale)</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="waste in wastes" :key="waste._id" class="data-item">
           <td>{{ waste.name }}</td>
-          <td>{{ waste.description }}</td>
-          <td>{{ waste.quantity }}</td>
+          <td>{{ waste.pricePublic }}</td>
+          <td>{{ waste.priceInternal }}</td>
+          <td>{{ waste.priceWholesale }}</td>
           <td class="action-buttons">
             <button class="btn edit-btn" @click="editWaste(waste)">Edit</button>
             <button class="btn delete-btn" @click="confirmDeleteWaste(waste)">Delete</button>
@@ -32,9 +34,10 @@
 
     <!-- Waste Form -->
     <form v-if="showAddWasteForm" @submit.prevent="submitForm" class="data-form">
-      <input v-model="newWaste.name" placeholder="Name" required  class="input-field">
-      <input v-model="newWaste.description" placeholder="Description" required  class="input-field">
-      <input v-model.number="newWaste.quantity" type="number" placeholder="Quantity" required  class="input-field">
+      <input v-model="newWaste.name" placeholder="Name" required class="input-field">
+      <input v-model.number="newWaste.pricePublic" type="number" step="0.01" placeholder="Price (Public)" required class="input-field">
+      <input v-model.number="newWaste.priceInternal" type="number" step="0.01" placeholder="Price (Internal)" required class="input-field">
+      <input v-model.number="newWaste.priceWholesale" type="number" step="0.01" placeholder="Price (Wholesale)" required class="input-field">
       <div class="form-buttons">
         <button type="submit" class="btn submit-btn">{{ isEditing ? 'Update' : 'Add' }} Waste</button>
         <button type="button" @click="cancelEdit" v-if="isEditing" class="btn cancel-btn">Cancel</button>
@@ -53,10 +56,8 @@
     </div>
   </div>
 </template>
-
 <script>
 import api from '@/services/api';
-
 
 export default {
   data() {
@@ -64,8 +65,9 @@ export default {
       wastes: [],
       newWaste: {
         name: '',
-        description: '',
-        quantity: 0
+        pricePublic: 0,
+        priceInternal: 0,
+        priceWholesale: 0
       },
       showAddWasteForm: false,
       showDeleteModal: false,
@@ -150,8 +152,9 @@ export default {
     resetForm() {
       this.newWaste = {
         name: '',
-        description: '',
-        quantity: 0
+        pricePublic: 0,
+        priceInternal: 0,
+        priceWholesale: 0
       };
       this.isEditing = false;
       this.editWasteId = null;

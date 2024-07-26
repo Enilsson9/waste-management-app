@@ -3,21 +3,31 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th>Type of Waste</th>
-          <th>Weight</th>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Items</th>
+          <th>Total Price</th>
+          <th>Status</th>
           <th>Created At</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="order in orders" :key="order._id" class="data-item">
-          <td>{{ order.typeOfWaste }}</td>
-          <td>{{ order.weight }}</td>
-          <td>{{ order.createdAt }}</td>
+          <td>{{ order.orderId }}</td>
+          <td>{{ order.customer ? order.customer.name : 'N/A' }}</td>
+          <td>
+            <ul>
+              <li v-for="item in order.items" :key="item.material ? item.material._id : item._id">
+                {{ item.material ? item.material.name : 'N/A' }}: {{ item.weight }} kg
+              </li>
+            </ul>
+          </td>
+          <td>{{ order.totalPrice }}</td>
+          <td>{{ order.status }}</td>
+          <td>{{ new Date(order.timestamp).toLocaleString() }}</td>
           <td class="action-buttons">
-            <template v-if="!isEditing || order._id !== editOrderId">
-              <button class="btn edit-btn" @click="editOrder(order)">Edit</button>
-            </template>
+            <button class="btn edit-btn" @click="editOrder(order)">Edit</button>
             <button class="btn delete-btn" @click="confirmDeleteOrder(order)">Delete</button>
           </td>
         </tr>
@@ -29,10 +39,24 @@
 
     <!-- Order Form -->
     <form v-if="showForm" @submit.prevent="submitForm" class="data-form">
-      <select v-model="newOrder.typeOfWaste" required class="input-field">
-        <option v-for="waste in wasteTypes" :key="waste.id" :value="waste.name">{{ waste.name }}</option>
+      <select v-model="newOrder.customer" required class="input-field">
+        <option value="" disabled>Select Customer</option>
+        <option v-for="customer in customers" :key="customer._id" :value="customer._id">{{ customer.name }}</option>
       </select>
-      <input v-model.number="newOrder.weight" type="number" placeholder="Weight" required class="input-field">
+      <div v-for="(item, index) in newOrder.items" :key="index" class="item-field">
+        <select v-model="item.material" required class="input-field">
+          <option value="" disabled>Select Material</option>
+          <option v-for="waste in wasteTypes" :key="waste._id" :value="waste._id">{{ waste.name }}</option>
+        </select>
+        <input v-model.number="item.weight" type="number" step="0.01" placeholder="Weight" required class="input-field">
+        <button type="button" @click="removeItem(index)" class="btn remove-item-btn">Remove</button>
+      </div>
+      <button type="button" @click="addItem" class="btn add-item-btn">Add Item</button>
+      <select v-model="newOrder.status" required class="input-field">
+        <option value="pending">Pending</option>
+        <option value="completed">Completed</option>
+        <option value="canceled">Canceled</option>
+      </select>
       <div class="form-buttons">
         <button type="submit" class="btn submit-btn">{{ isEditing ? 'Update' : 'Add' }} Order</button>
         <button type="button" @click="cancelEdit" class="btn cancel-btn">Cancel</button>
@@ -59,16 +83,13 @@ export default {
   data() {
     return {
       orders: [],
+      customers: [],
+      wasteTypes: [],
       newOrder: {
-        typeOfWaste: '',
-        weight: ''
+        customer: '',
+        items: [{ material: '', weight: 0 }],
+        status: 'pending'
       },
-      wasteTypes: [
-        { id: 1, name: 'Plastic' },
-        { id: 2, name: 'Metal' },
-        { id: 3, name: 'Cardboard' },
-        { id: 4, name: 'Bronze' },
-      ],
       showForm: false,
       showDeleteModal: false,
       deleteOrderId: null,
@@ -78,45 +99,66 @@ export default {
   },
   created() {
     this.fetchOrders();
+    this.fetchCustomers();
+    this.fetchWasteTypes();
   },
   methods: {
-    fetchOrders() {
-      api.getAllOrders()
-        .then(response => {
-          this.orders = response.data;
-        })
-        .catch(error => {
-          console.error("Error fetching orders:", error);
-        });
+    async fetchOrders() {
+      try {
+        const response = await api.getAllOrders();
+        this.orders = response.data;
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      }
+    },
+    async fetchCustomers() {
+      try {
+        const response = await api.getAllCustomers();
+        this.customers = response.data;
+      } catch (error) {
+        console.error('Error fetching customers:', error);
+      }
+    },
+    async fetchWasteTypes() {
+      try {
+        const response = await api.getAllWaste();
+        this.wasteTypes = response.data;
+      } catch (error) {
+        console.error('Error fetching waste types:', error);
+      }
     },
     toggleForm(show) {
+      console.log('Toggle form:', show); // Debug log
       this.showForm = show;
       if (!show) {
         this.resetForm();
       }
     },
     async submitForm() {
+      console.log('Submit form:', this.newOrder); // Debug log
       if (this.isEditing) {
         await this.updateOrder();
       } else {
-        await this.addOrder();
+        await this.createOrder();
       }
     },
-    async addOrder() {
+    async createOrder() {
       try {
-        const response = await api.addOrder(this.newOrder);
+        console.log('Creating order:', this.newOrder); // Debug log
+        const response = await api.createOrder(this.newOrder);
         this.orders.push(response.data);
         this.resetForm();
       } catch (error) {
-        console.error("Error adding order:", error);
+        console.error('Error creating order:', error);
       }
     },
     async updateOrder() {
       try {
-        await api.updateOrder(this.editOrderId, this.newOrder);
+        console.log('Updating order:', this.newOrder); // Debug log
+        const response = await api.updateOrder(this.editOrderId, this.newOrder);
         const index = this.orders.findIndex(order => order._id === this.editOrderId);
         if (index !== -1) {
-          this.orders.splice(index, 1, { ...this.newOrder, _id: this.editOrderId });
+          this.orders.splice(index, 1, response.data);
         }
         this.resetForm();
       } catch (error) {
@@ -125,39 +167,60 @@ export default {
     },
     async deleteOrder() {
       try {
+        console.log('Deleting order ID:', this.deleteOrderId); // Debug log
         await api.deleteOrder(this.deleteOrderId);
         this.orders = this.orders.filter(order => order._id !== this.deleteOrderId);
         this.closeDeleteModal();
       } catch (error) {
-        console.error("Error deleting order:", error);
+        console.error('Error deleting order:', error);
       }
     },
     confirmDeleteOrder(order) {
+      console.log('Confirm delete order ID:', order._id); // Debug log
       this.showDeleteModal = true;
       this.deleteOrderId = order._id;
     },
     closeDeleteModal() {
+      console.log('Close delete modal'); // Debug log
       this.showDeleteModal = false;
       this.deleteOrderId = null;
     },
     editOrder(order) {
-      this.newOrder = { ...order };
+      console.log('Editing order:', order); // Debug log
+      this.newOrder = {
+        customer: order.customer._id,
+        items: order.items.map(item => ({ material: item.material._id, weight: item.weight })),
+        status: order.status
+      };
       this.editOrderId = order._id;
       this.isEditing = true;
       this.showForm = true;
     },
     cancelEdit() {
+      console.log('Cancel edit'); // Debug log
       this.resetForm();
     },
     resetForm() {
+      console.log('Reset form'); // Debug log
       this.newOrder = {
-        typeOfWaste: '',
-        weight: ''
+        customer: '',
+        items: [{ material: '', weight: 0 }],
+        status: 'pending'
       };
       this.isEditing = false;
       this.editOrderId = null;
       this.showForm = false;
+    },
+    addItem() {
+      console.log('Add item'); // Debug log
+      this.newOrder.items.push({ material: '', weight: 0 });
+    },
+    removeItem(index) {
+      console.log('Remove item at index:', index); // Debug log
+      this.newOrder.items.splice(index, 1);
     }
   }
 };
 </script>
+
+
