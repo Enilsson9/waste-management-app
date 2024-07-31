@@ -145,7 +145,7 @@ export default {
     async createOrder() {
       try {
         console.log('Creating order:', this.newOrder); // Debug log
-        const response = await api.createOrder(this.newOrder);
+        const response = await api.addOrder(this.newOrder);
         this.orders.push(response.data);
         this.resetForm();
       } catch (error) {

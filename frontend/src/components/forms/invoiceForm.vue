@@ -112,6 +112,7 @@ export default {
       }
     },
     toggleForm(show) {
+      console.log('Toggle form:', show); // Debugging log
       this.showForm = show;
       if (!show) {
         this.resetForm();
@@ -122,13 +123,14 @@ export default {
       if (this.isEditing) {
         await this.updateInvoice();
       } else {
-        await this.addInvoice();
+        await this.createInvoice();
       }
     },
-    async addInvoice() {
+    async createInvoice() {
       try {
         console.log('Creating invoice:', this.newInvoice); // Debugging log
         const response = await api.createInvoice(this.newInvoice);
+        console.log('Invoice created:', response.data); // Debugging log
         this.invoices.push(response.data);
         this.resetForm();
       } catch (error) {
@@ -139,6 +141,7 @@ export default {
       try {
         console.log('Updating invoice:', this.newInvoice); // Debugging log
         const response = await api.updateInvoice(this.editInvoiceId, this.newInvoice);
+        console.log('Invoice updated:', response.data); // Debugging log
         const index = this.invoices.findIndex(invoice => invoice._id === this.editInvoiceId);
         if (index !== -1) {
           this.invoices.splice(index, 1, response.data);
