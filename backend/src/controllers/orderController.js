@@ -73,9 +73,20 @@ async function deleteOrder(id) {
     return { message: 'Order deleted successfully' };
 }
 
+async function getOrderById(id) {
+    try {
+      const order = await Order.findById(id).populate('customer').populate('items.material');
+      return order;
+    } catch (err) {
+      throw new Error('Error fetching order by ID');
+    }
+  }
+
+  
 module.exports = {
     getAllOrders,
     addOrder,
     updateOrder,
-    deleteOrder
+    deleteOrder,
+    getOrderById
 };

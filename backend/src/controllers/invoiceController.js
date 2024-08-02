@@ -49,9 +49,19 @@ async function deleteInvoice(id) {
     return { message: 'Invoice deleted successfully' };
 }
 
+async function getInvoiceById(id) {
+    try {
+      const invoice = await Invoice.findById(id);
+      return invoice;
+    } catch (err) {
+      throw new Error(`Error fetching invoice by ID: ${err.message}`);
+    }
+  }
+
 module.exports = {
     getAllInvoices,
     addInvoice,
     updateInvoice,
-    deleteInvoice
+    deleteInvoice,
+    getInvoiceById
 };

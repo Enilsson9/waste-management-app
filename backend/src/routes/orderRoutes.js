@@ -10,6 +10,20 @@ async function orderRoutes(fastify, options) {
     }
   });
 
+  fastify.get('/order/:id', async (request, reply) => {
+    try {
+      const order = await orderController.getOrderById(request.params.id);
+      if (!order) {
+        return reply.code(404).send({ error: 'Not Found', message: 'Order not found' });
+      }
+      return order;
+    } catch (err) {
+      reply.code(500).send({ error: 'Internal Server Error', message: err.message });
+    }
+  });
+
+  
+
   fastify.post('/order', async (request, reply) => {
     try {
       const newOrder = await orderController.addOrder(request.body);

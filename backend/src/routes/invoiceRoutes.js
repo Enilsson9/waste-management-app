@@ -10,6 +10,19 @@ async function invoiceRoutes(fastify, options) {
     }
   });
 
+  fastify.get('/invoice/:id', async (request, reply) => {
+    try {
+      const order = await invoiceController.getInvoiceById(request.params.id);
+      if (!order) {
+        return reply.code(404).send({ error: 'Not Found', message: 'Order not found' });
+      }
+      return order;
+    } catch (err) {
+      reply.code(500).send({ error: 'Internal Server Error', message: err.message });
+    }
+  });
+
+
   fastify.post('/invoice', async (request, reply) => {
     try {
       const newInvoice = await invoiceController.addInvoice(request.body);
