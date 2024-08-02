@@ -3,18 +3,39 @@
     <div v-if="accessDenied" class="warning">
       <p>You do not have access to this page.</p>
     </div>
+
     <table class="data-table">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Price (Public)</th>
-          <th>Price (Internal)</th>
-          <th>Price (Wholesale)</th>
+          <th @click="sortBy('name')">
+            Name
+            <span class="sort-arrow" v-if="sortKey === 'name'">
+              {{ sortDirection === 1 ? '▲' : '▼' }}
+            </span>
+          </th>
+          <th @click="sortBy('pricePublic')">
+            Price (Public)
+            <span class="sort-arrow" v-if="sortKey === 'pricePublic'">
+              {{ sortDirection === 1 ? '▲' : '▼' }}
+            </span>
+          </th>
+          <th @click="sortBy('priceInternal')">
+            Price (Internal)
+            <span class="sort-arrow" v-if="sortKey === 'priceInternal'">
+              {{ sortDirection === 1 ? '▲' : '▼' }}
+            </span>
+          </th>
+          <th @click="sortBy('priceWholesale')">
+            Price (Wholesale)
+            <span class="sort-arrow" v-if="sortKey === 'priceWholesale'">
+              {{ sortDirection === 1 ? '▲' : '▼' }}
+            </span>
+          </th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="waste in wastes" :key="waste._id" class="data-item">
+        <tr v-for="waste in sortedWastes" :key="waste._id" class="data-item">
           <td>{{ waste.name }}</td>
           <td>{{ waste.pricePublic }}</td>
           <td>{{ waste.priceInternal }}</td>
@@ -27,12 +48,10 @@
       </tbody>
     </table>
 
-    <!-- Toggle Add New Waste Form -->
     <button @click="toggleAddWasteForm" class="btn add-btn">
       {{ showAddWasteForm ? "Cancel" : "Add Waste" }}
     </button>
 
-    <!-- Waste Form -->
     <form v-if="showAddWasteForm" @submit.prevent="submitForm" class="data-form">
       <input v-model="newWaste.name" placeholder="Name" required class="input-field">
       <input v-model.number="newWaste.pricePublic" type="number" step="0.01" placeholder="Price (Public)" required class="input-field">
@@ -44,7 +63,6 @@
       </div>
     </form>
 
-    <!-- Delete Confirmation Modal -->
     <div v-if="showDeleteModal" class="modal">
       <div class="modal-content">
         <p>Are you sure you want to delete this waste?</p>
@@ -56,6 +74,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import api from '@/services/api';
 
@@ -65,19 +84,37 @@ export default {
       wastes: [],
       newWaste: {
         name: '',
-        pricePublic: 0,
-        priceInternal: 0,
-        priceWholesale: 0
+        pricePublic: '',
+        priceInternal: '',
+        priceWholesale: ''
       },
       showAddWasteForm: false,
       showDeleteModal: false,
       deleteWasteId: null,
       isEditing: false,
-      editWasteId: null
+      editWasteId: null,
+      sortKey: '',
+      sortDirection: 1 // 1 for ascending, -1 for descending
     };
   },
   created() {
     this.fetchWastes();
+  },
+  computed: {
+    sortedWastes() {
+      // Clone the array before sorting to avoid mutating the original array
+      return [...this.wastes].sort((a, b) => {
+        let result = 0;
+        if (this.sortKey) {
+          if (typeof a[this.sortKey] === 'string') {
+            result = a[this.sortKey].localeCompare(b[this.sortKey]);
+          } else if (typeof a[this.sortKey] === 'number') {
+            result = a[this.sortKey] - b[this.sortKey];
+          }
+        }
+        return result * this.sortDirection;
+      });
+    }
   },
   methods: {
     fetchWastes() {
@@ -88,6 +125,14 @@ export default {
         .catch(error => {
           console.error('Error fetching wastes:', error);
         });
+    },
+    sortBy(key) {
+      if (this.sortKey === key) {
+        this.sortDirection *= -1;
+      } else {
+        this.sortKey = key;
+        this.sortDirection = 1;
+      }
     },
     toggleAddWasteForm() {
       this.showAddWasteForm = !this.showAddWasteForm;
@@ -152,9 +197,9 @@ export default {
     resetForm() {
       this.newWaste = {
         name: '',
-        pricePublic: 0,
-        priceInternal: 0,
-        priceWholesale: 0
+        pricePublic: '',
+        priceInternal: '',
+        priceWholesale: ''
       };
       this.isEditing = false;
       this.editWasteId = null;
@@ -163,3 +208,14 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+
+
+.sort-arrow {
+  margin-left: 8px;
+  font-size: 12px;
+}
+
+
+</style>

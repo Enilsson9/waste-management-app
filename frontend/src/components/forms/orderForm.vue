@@ -14,12 +14,12 @@
       </thead>
       <tbody>
         <tr v-for="order in orders" :key="order._id" class="data-item">
-          <td>{{ order.orderId }}</td>
+          <td @click="viewOrderDetails(order._id)" class="clickable">{{ order.orderId }}</td>
           <td>{{ order.customer ? order.customer.name : 'N/A' }}</td>
           <td>
             <ul>
               <li v-for="item in order.items" :key="item.material ? item.material._id : item._id">
-                {{ item.material ? item.material.name : 'N/A' }}: {{ item.weight }} kg
+                {{ item.material ? item.material.name : 'N/A' }}: {{ item.weight }} lbs
               </li>
             </ul>
           </td>
@@ -34,10 +34,8 @@
       </tbody>
     </table>
 
-    <!-- Toggle Add New Order Button -->
     <button v-if="!showForm" class="btn add-btn" @click="toggleForm(true)">Add New Order</button>
 
-    <!-- Order Form -->
     <form v-if="showForm" @submit.prevent="submitForm" class="data-form">
       <select v-model="newOrder.customer" required class="input-field">
         <option value="" disabled>Select Customer</option>
@@ -49,9 +47,12 @@
           <option v-for="waste in wasteTypes" :key="waste._id" :value="waste._id">{{ waste.name }}</option>
         </select>
         <input v-model.number="item.weight" type="number" step="0.01" placeholder="Weight" required class="input-field">
-        <button type="button" @click="removeItem(index)" class="btn remove-item-btn">Remove</button>
+        <button type="button" @click="removeItem(index)" class="btn delete-btn">Remove</button>
       </div>
-      <button type="button" @click="addItem" class="btn add-item-btn">Add Item</button>
+      <div class="item-field">
+        <button type="button" @click="addItem" class="btn edit-btn">Add Item</button>
+      </div>
+      
       <select v-model="newOrder.status" required class="input-field">
         <option value="pending">Pending</option>
         <option value="completed">Completed</option>
@@ -63,7 +64,6 @@
       </div>
     </form>
 
-    <!-- Delete Confirmation Modal -->
     <div v-if="showDeleteModal" class="modal">
       <div class="modal-content">
         <p>Are you sure you want to delete this order?</p>
@@ -87,7 +87,7 @@ export default {
       wasteTypes: [],
       newOrder: {
         customer: '',
-        items: [{ material: '', weight: 0 }],
+        items: [{ material: '', weight: '' }],
         status: 'pending'
       },
       showForm: false,
@@ -128,14 +128,12 @@ export default {
       }
     },
     toggleForm(show) {
-      console.log('Toggle form:', show); // Debug log
       this.showForm = show;
       if (!show) {
         this.resetForm();
       }
     },
     async submitForm() {
-      console.log('Submit form:', this.newOrder); // Debug log
       if (this.isEditing) {
         await this.updateOrder();
       } else {
@@ -144,7 +142,6 @@ export default {
     },
     async createOrder() {
       try {
-        console.log('Creating order:', this.newOrder); // Debug log
         const response = await api.addOrder(this.newOrder);
         this.orders.push(response.data);
         this.resetForm();
@@ -154,7 +151,6 @@ export default {
     },
     async updateOrder() {
       try {
-        console.log('Updating order:', this.newOrder); // Debug log
         const response = await api.updateOrder(this.editOrderId, this.newOrder);
         const index = this.orders.findIndex(order => order._id === this.editOrderId);
         if (index !== -1) {
@@ -167,7 +163,6 @@ export default {
     },
     async deleteOrder() {
       try {
-        console.log('Deleting order ID:', this.deleteOrderId); // Debug log
         await api.deleteOrder(this.deleteOrderId);
         this.orders = this.orders.filter(order => order._id !== this.deleteOrderId);
         this.closeDeleteModal();
@@ -176,17 +171,14 @@ export default {
       }
     },
     confirmDeleteOrder(order) {
-      console.log('Confirm delete order ID:', order._id); // Debug log
       this.showDeleteModal = true;
       this.deleteOrderId = order._id;
     },
     closeDeleteModal() {
-      console.log('Close delete modal'); // Debug log
       this.showDeleteModal = false;
       this.deleteOrderId = null;
     },
     editOrder(order) {
-      console.log('Editing order:', order); // Debug log
       this.newOrder = {
         customer: order.customer._id,
         items: order.items.map(item => ({ material: item.material._id, weight: item.weight })),
@@ -197,14 +189,12 @@ export default {
       this.showForm = true;
     },
     cancelEdit() {
-      console.log('Cancel edit'); // Debug log
       this.resetForm();
     },
     resetForm() {
-      console.log('Reset form'); // Debug log
       this.newOrder = {
         customer: '',
-        items: [{ material: '', weight: 0 }],
+        items: [{ material: '', weight: '' }],
         status: 'pending'
       };
       this.isEditing = false;
@@ -212,15 +202,23 @@ export default {
       this.showForm = false;
     },
     addItem() {
-      console.log('Add item'); // Debug log
-      this.newOrder.items.push({ material: '', weight: 0 });
+      this.newOrder.items.push({ material: '', weight: '' });
     },
     removeItem(index) {
-      console.log('Remove item at index:', index); // Debug log
       this.newOrder.items.splice(index, 1);
+    },
+    viewOrderDetails(orderId) {
+      this.$router.push({ name: 'OrderDetails', params: { orderId } });
     }
   }
 };
 </script>
 
-
+<style>
+/* Add styling for .clickable if needed */
+.clickable {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+}
+</style>

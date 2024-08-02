@@ -77,5 +77,17 @@ export default {
     },
     deleteInvoice(id) {
         return apiClient.delete(`/invoice/${id}`);
-    }
+    },
+
+    //Orders by Customers
+    getCustomerOrders(id) {
+        return apiClient.get(`/customer/${id}/orders`);
+    },
+
+    //Invoices by Customers
+    getCustomerInvoices(id) {
+        return apiClient.get(`/customer/${id}/invoices`);
+    },
+
+
 };

@@ -1,53 +1,68 @@
-import { createRouter, createWebHistory } from 'vue-router'; // Import from vue-router for Vue 3
+import { createRouter, createWebHistory } from 'vue-router';
 
-
-//Forms
+// Import the components
 import WasteForm from '../components/forms/WasteForm.vue';
 import invoiceForm from '../components/forms/invoiceForm.vue';
 import orderForm from '../components/forms/orderForm.vue';
 import customerForm from '../components/forms/customerForm.vue';
 import LoginForm from '../components/forms/LoginForm.vue';
-
+import OrderDetails from '../components/forms/OrderDetails.vue'; 
+import CustomerDetails from '../components/forms/CustomerDetails.vue'; 
+import InvoiceDetails from '../components/forms/InvoiceDetails.vue'; 
 
 const routes = [
-    {
-        path: '/',
-        name: 'LoginForm',
-        component: LoginForm
-    },
-    {
-        path: '/waste',
-        name: 'WasteList',
-        component: WasteForm,
-        meta: { requiresAuth: true, roles: ['admin'] }
-    },
-    //orders
-    {
-        path: '/orders',
-        name: 'orderList',
-        component: orderForm,
-        meta: { requiresAuth: true, roles: ['admin', 'cashier', 'weigher'] }
-    },
-    //invoices
-    {
-        path: '/invoices',
-        name: 'invoiceList',
-        component: invoiceForm,
-        meta: { requiresAuth: true, roles: ['admin', 'cashier'] }
-        
-    },
-    //customers
-    {
-        path: '/customers',
-        name: 'customerList',
-        component: customerForm,
-        meta: { requiresAuth: true, roles: ['admin'] }
-    },
+  {
+    path: '/',
+    name: 'LoginForm',
+    component: LoginForm
+  },
+  {
+    path: '/waste',
+    name: 'WasteList',
+    component: WasteForm,
+    meta: { requiresAuth: true, roles: ['admin'] }
+  },
+  {
+    path: '/orders',
+    name: 'orderList',
+    component: orderForm,
+    meta: { requiresAuth: true, roles: ['admin', 'cashier', 'weigher'] }
+  },
+  {
+    path: '/orders/:orderId',
+    name: 'OrderDetails',
+    component: OrderDetails,
+    meta: { requiresAuth: true, roles: ['admin', 'cashier', 'weigher'] }
+  },
+  {
+    path: '/invoices',
+    name: 'invoiceList',
+    component: invoiceForm,
+    meta: { requiresAuth: true, roles: ['admin', 'cashier'] }
+  },
+  {
+    path: '/customers',
+    name: 'customerList',
+    component: customerForm,
+    meta: { requiresAuth: true, roles: ['admin'] }
+  },
+  {
+    path: '/customers/:customerId',
+    name: 'CustomerDetails',
+    component: CustomerDetails,
+    meta: { requiresAuth: true, roles: ['admin'] }
+  },
+  {
+    path: '/invoices/:invoiceId',
+    name: 'InvoiceDetails',
+    component: InvoiceDetails,
+    meta: { requiresAuth: true, roles: ['admin', 'cashier'] }
+  },
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes
+  history: createWebHistory(),
+  routes
 });
 
 router.beforeEach((to, from, next) => {

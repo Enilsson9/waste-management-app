@@ -10,7 +10,7 @@
       </thead>
       <tbody>
         <tr v-for="customer in customers" :key="customer._id" class="data-item">
-          <td>{{ customer.name }}</td>
+          <td @click="viewCustomerDetails(customer._id)" class="clickable">{{ customer.name }}</td>
           <td>{{ customer.type }}</td>
           <td class="action-buttons">
             <button class="btn edit-btn" @click="editCustomer(customer)">Edit</button>
@@ -153,7 +153,12 @@ export default {
       this.isEditing = false;
       this.editCustomerId = null;
       this.showAddCustomerForm = false;
+    },
+    viewCustomerDetails(customerId) {
+      console.log(customerId);
+      this.$router.push({ name: 'CustomerDetails', params: { customerId } });
     }
+    
   }
 };
 </script>
