@@ -36,6 +36,16 @@ async function wasteRoutes(fastify, options) {
       reply.code(500).send({ error: 'Internal Server Error', message: err.message });
     }
   });
+
+  // Add this new route for updating waste by name
+  fastify.put('/waste/name/:name', async (request, reply) => {
+    try {
+      const updatedWaste = await wasteController.updateWasteByName(request.params.name, request.body);
+      return updatedWaste;
+    } catch (err) {
+      reply.code(500).send({ error: 'Internal Server Error', message: err.message });
+    }
+  });
 }
 
 module.exports = wasteRoutes;

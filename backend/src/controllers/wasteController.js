@@ -25,9 +25,16 @@ async function deleteWaste(id) {
     return deletedWaste;
 }
 
+// Update a waste by name
+async function updateWasteByName(name, wasteData) {
+    const updatedWaste = await Waste.findOneAndUpdate({ name }, wasteData, { new: true });
+    return updatedWaste;
+}
+
 module.exports = {
     getAllWaste,
     addWaste,
     updateWaste,
-    deleteWaste
+    deleteWaste,
+    updateWasteByName
 };
