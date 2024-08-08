@@ -8,11 +8,14 @@ const apiClient = axios.create({
 });
 
 export default {
+
     //Login
     login(payload) {
         return apiClient.post('/login', payload);
     },
-    // Waste endpoints
+    getSummary() {
+        return apiClient.get('/summary');
+    },
     getAllWaste() {
         return apiClient.get('/waste');
     },
@@ -88,6 +91,11 @@ export default {
     getCustomerInvoices(id) {
         return apiClient.get(`/customer/${id}/invoices`);
     },
+    
 
+    //Update waste by name
+    updateWasteByName (name, waste) {
+        return apiClient.put(`/waste/name/${name}`, waste);
+    }
 
 };

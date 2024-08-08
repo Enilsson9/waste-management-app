@@ -9,12 +9,19 @@ import LoginForm from '../components/forms/LoginForm.vue';
 import OrderDetails from '../components/forms/OrderDetails.vue'; 
 import CustomerDetails from '../components/forms/CustomerDetails.vue'; 
 import InvoiceDetails from '../components/forms/InvoiceDetails.vue'; 
+import HomeForm from '../components/forms/HomeForm.vue'; 
 
 const routes = [
   {
     path: '/',
     name: 'LoginForm',
     component: LoginForm
+  },
+  {
+    path: '/home',
+    name: 'HomeForm',
+    component: HomeForm,
+    meta: { requiresAuth: true, roles: ['admin'] }
   },
   {
     path: '/waste',

@@ -16,7 +16,9 @@
       <tbody>
         <tr v-for="invoice in invoices" :key="invoice._id" class="data-item">
           <td @click="viewInvoiceDetails(invoice._id)" class="clickable">{{ invoice.invoiceId }}</td>
-          <td @click="viewOrderDetails(invoice.orderId._id)" class="clickable">{{ invoice.orderId.orderId }}</td>
+          <td @click="viewOrderDetails(invoice.orderId?._id)" class="clickable">
+            {{ invoice.orderId?.orderId || 'N/A' }}
+          </td>
           <td>{{ invoice.orderId && invoice.orderId.customer ? invoice.orderId.customer.name : 'N/A' }}</td>
           <td>{{ invoice.orderId ? invoice.orderId.totalPrice : 'N/A' }}</td>
           <td>{{ invoice.paymentMethod }}</td>

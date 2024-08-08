@@ -41,7 +41,7 @@
             // Redirect based on role
             switch (response.data.role) {
               case 'admin':
-                router.push({ name: 'WasteList' }); 
+                router.push({ name: 'HomeForm' }); 
                 break;
               case 'cashier':
                 router.push({ name: 'invoiceList' }); 

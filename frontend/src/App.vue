@@ -3,6 +3,7 @@
     <header v-if="!isLoginPage" class="navbar">
       <h1 class="logo">Waste Management App</h1>
       <nav class="nav-links">
+        <router-link to="/home" class="nav-link" active-class="active">Home</router-link>
         <router-link to="/waste" class="nav-link" active-class="active">Waste</router-link>
         <router-link to="/customers" class="nav-link" active-class="active">Customers</router-link>
         <router-link to="/orders" class="nav-link" active-class="active">Orders</router-link>
