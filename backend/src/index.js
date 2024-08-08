@@ -30,6 +30,8 @@ fastify.register(require('./routes/invoiceRoutes'), { prefix: '/api' });
 fastify.register(require('./routes/customerRoutes'), { prefix: '/api' });
 fastify.register(require('./routes/loginRoutes'), { prefix: '/api' });
 fastify.register(require('./routes/registerRoutes'), { prefix: '/api' });
+fastify.register(require('./routes/summaryRoutes'), { prefix: '/api' });
+
 
 // Start server
 const start = async () => {
