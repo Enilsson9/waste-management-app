@@ -8,6 +8,7 @@ require('dotenv').config();
 // Enable CORS
 fastify.register(fastifyCors, { 
     origin: '*' 
+    //origin: ['https://app.nilsson.gt']
 });
 
 // Register body parser and sensible plugins
